@@ -9,11 +9,6 @@ export default function Tasks() {
   const [filter, setFilter] = useState('all');
   const [loading, setLoading] = useState(true);
 
-  const user = (() => {
-    try { return JSON.parse(localStorage.getItem('user') || '{}'); }
-    catch { return {}; }
-  })();
-
   const loadTasks = () => {
     getTasks().then((data) => {
       if (Array.isArray(data)) setTasks(data);
@@ -50,10 +45,12 @@ export default function Tasks() {
       <div className="page-container">
         <div className="page-header">
           <h2>📋 My Tasks</h2>
-          <p>{tasks.length} total · {tasks.filter(t => t.status === 'pending').length} pending</p>
+          <p>
+            {tasks.length} total ·{" "}
+            {tasks.filter(t => t.status === 'pending').length} pending
+          </p>
         </div>
 
-        {/* Note for students */}
         <div style={{
           background: 'var(--primary-light)',
           color: 'var(--primary-dark)',
@@ -66,7 +63,6 @@ export default function Tasks() {
           ℹ️ Tasks are assigned to you by your admin. Contact your admin for any changes.
         </div>
 
-        {/* Filter Tabs */}
         <div className="filter-tabs">
           {['all', 'pending', 'completed'].map((f) => (
             <button
@@ -82,7 +78,6 @@ export default function Tasks() {
           ))}
         </div>
 
-        {/* Task List */}
         {loading ? (
           <div className="loading">Loading tasks...</div>
         ) : filteredTasks.length === 0 ? (
@@ -94,32 +89,56 @@ export default function Tasks() {
           <ul className="task-list">
             {filteredTasks.map((task) => (
               <li key={task._id} className={`task-item ${task.status}`}>
-                <div style={{
-                  width: 12, height: 12, borderRadius: '50%',
-                  background: task.status === 'completed' ? 'var(--success)' : 'var(--warning)',
-                  flexShrink: 0
-                }} />
+                <div
+                  style={{
+                    width: 12,
+                    height: 12,
+                    borderRadius: '50%',
+                    background:
+                      task.status === 'completed'
+                        ? 'var(--success)'
+                        : 'var(--warning)',
+                    flexShrink: 0
+                  }}
+                />
 
                 <div className="task-info">
-                  <span className={`task-title ${task.status === 'completed' ? 'strikethrough' : ''}`}>
+                  <span
+                    className={`task-title ${
+                      task.status === 'completed' ? 'strikethrough' : ''
+                    }`}
+                  >
                     {task.title}
                   </span>
+
                   {task.description && (
                     <span className="task-meta">{task.description}</span>
                   )}
-                  <div className="task-meta" style={{ display: 'flex', gap: 12, marginTop: 3 }}>
+
+                  <div
+                    className="task-meta"
+                    style={{ display: 'flex', gap: 12, marginTop: 3 }}
+                  >
                     {task.deadline && (
-                      <span style={{ color: getDeadlineColor(task.deadline, task.status), fontWeight: 600 }}>
+                      <span
+                        style={{
+                          color: getDeadlineColor(task.deadline, task.status),
+                          fontWeight: 600
+                        }}
+                      >
                         📅 Due: {formatDate(task.deadline)}
                       </span>
                     )}
+
                     {task.createdBy?.email && (
                       <span>Assigned by: {task.createdBy.email}</span>
                     )}
                   </div>
                 </div>
 
-                <span className={`badge badge-${task.status}`}>{task.status}</span>
+                <span className={`badge badge-${task.status}`}>
+                  {task.status}
+                </span>
               </li>
             ))}
           </ul>
